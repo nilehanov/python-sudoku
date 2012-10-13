@@ -1,6 +1,7 @@
 #!/usr/bin/env python
+import csv
 
-puzzleFile = 'puzzle.txt'
+puzzleFile = 'puzzle.csv'
 
 class puzzle():
   def __init__(self, fileName):
@@ -8,10 +9,9 @@ class puzzle():
     self.puzzle = []
     self.readInPuzzle()
   def readInPuzzle(self):
-    self.file = open(self.fileName)
     self.puzzle = []
-    for line in self.file:
-      self.puzzle.append(line.strip().split(' '))
+    for line in csv.reader(open(self.fileName)):
+      self.puzzle.append(line)
     for row in range(len(self.puzzle)):
       for cell in range(len(self.puzzle[row])):
         if self.puzzle[row][cell] == 'x':
