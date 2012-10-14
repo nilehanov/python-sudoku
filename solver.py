@@ -41,6 +41,8 @@ class puzzle():
       for c in range(modVal, modVal + self.sqrtLen):
         output.append(self.puzzle[r][c])
     return output
+  def setCellValue(self, rowNum, colNum, value):
+    self.puzzle[rowNum][colNum] = value
 
 
 
@@ -57,3 +59,7 @@ for i in range(len(PUZZLE.puzzle)):
 print "Boxes:"
 for i in range(len(PUZZLE.puzzle)):
   print PUZZLE.B(i)
+
+#PUZZLE.setCellValue(0, 0, 5)
+#print "Did box 0 change?"
+#print PUZZLE.B(0)
