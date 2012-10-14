@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import csv
+import math
 
 puzzleFile = 'puzzle.csv'
 
@@ -8,6 +9,7 @@ class puzzle():
     self.fileName = fileName
     self.puzzle = []
     self.readInPuzzle()
+    self.sqrtLen = int(math.sqrt(len(self.puzzle)))
   def readInPuzzle(self):
     self.puzzle = []
     for line in csv.reader(open(self.fileName)):
@@ -24,11 +26,34 @@ class puzzle():
       output += "\n"
     output = output[0:-1]
     print output
-  def R1(self):
-    return self.puzzle[0]
+  def R(self, rowNum):
+    return self.puzzle[rowNum]
+  def C(self, colNum):
+    output = []
+    for row in self.puzzle:
+      output.append(row[colNum])
+    return output
+  def B(self, boxNum):
+    output = []
+    divVal = int(boxNum / self.sqrtLen) * self.sqrtLen
+    modVal = (boxNum % self.sqrtLen) * self.sqrtLen
+    for r in range(divVal, divVal + self.sqrtLen):
+      for c in range(modVal, modVal + self.sqrtLen):
+        output.append(self.puzzle[r][c])
+    return output
+
+
 
 PUZZLE = puzzle(puzzleFile)
 
 PUZZLE.printPuzzle()
 
-print PUZZLE.R1()
+print "Rows:"
+for i in range(len(PUZZLE.puzzle)):
+  print PUZZLE.R(i)
+print "Cols:"
+for i in range(len(PUZZLE.puzzle)):
+  print PUZZLE.C(i)
+print "Boxes:"
+for i in range(len(PUZZLE.puzzle)):
+  print PUZZLE.B(i)
