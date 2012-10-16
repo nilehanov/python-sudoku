@@ -12,6 +12,7 @@ class puzzle():
     self.readInPuzzle()
     self.len = len(self.puzzle)
     self.sqrtLen = int(math.sqrt(self.len))
+    self.buildPoss()
   def readInPuzzle(self):
     input = []
     for line in csv.reader(open(self.fileName)):
@@ -56,7 +57,20 @@ class puzzle():
     for i in range(self.len):
       for j in range(self.len):
         self.poss[i][j] = self.puzzleElements[:]
-
+    for row in range(self.len):
+      for cell in range(self.len):
+        if self.puzzle[row][cell] in self.puzzleElements:
+          self.poss[row][cell] = [self.puzzle[row][cell]]
+  def stepPoss(self):
+    for row in range(self.len):
+      for cell in range(self.len):
+        if len(self.poss[row][cell]) == 1:
+          for rowPop in range(self.len):
+            if rowPop != row:
+              self.poss[rowPop][cell] = [item for item in self.poss[rowPop][cell] if item not in self.poss[row][cell]]
+          for cellPop in range(self.len):
+            if cellPop != cell:
+              self.poss[row][cellPop] = [item for item in self.poss[row][cellPop] if item not in self.poss[row][cell]]
 
 
 PUZZLE = puzzle(puzzleFile)
@@ -75,10 +89,18 @@ print "Boxes:"
 for i in range(len(PUZZLE.puzzle)):
   print PUZZLE.B(i)
 
-print "Testing poss:"
-PUZZLE.buildPoss()
-for row in PUZZLE.poss:
-  print row
+for i in range(50):
+  PUZZLE.stepPoss()
+  print "===========================FIRE(" + str(i) + ")========================="
+  for row in range(PUZZLE.len):
+    print "row " + str(row) + ":"
+    print PUZZLE.poss[row]
+
+
+
+
+
+
 
 #PUZZLE.setCellValue(0, 0, 5)
 #print "Did box 0 change?"
