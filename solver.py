@@ -31,15 +31,15 @@ class puzzle():
       self.indexer[i] = {
         'R' : int(i / self.sqrtLen),
         'C' : i % self.sqrtLen,
-        'B' : (i / self.sqrtSqrtLen ** 3) + (i / self.sqrtLen) % self.sqrtSqrtLen,
+        'B' : int(i / self.sqrtSqrtLen ** 3) * 3 + int(i / self.sqrtLen) % self.sqrtSqrtLen,
       }
     self.indexer['R'] = {}
     self.indexer['C'] = {}
     self.indexer['B'] = {}
-#    for i in range(self.sqrtLen):
-#      self.indexer['R'][i] = [val for val in self.indexer[i] if val['R'] == i]
-#      self.indexer['C'][i] = self.indexer[i]['C']
-#      self.indexer['B'][i] = self.indexer[i]['B']
+    for ######################################## bed time    
+ in self.indexer[i] if val['R'] == i]
+    self.indexer['C'][i] = [val['C'] for val in self.indexer[i] if val['C'] == i]
+    self.indexer['B'][i] = [val['B'] for val in self.indexer[i] if val['B'] == i]
   def printIndexer(self):
     print self.indexer.keys()
     for i in self.indexer.keys():
@@ -63,7 +63,7 @@ class puzzle():
   def getB(self, boxNum):
     output = []
     for i in self.indexer.keys():
-      print indexer[i]
+      print self.indexer[i]
       if self.indexer[i]['B'] == boxNum:
         output.append(self.puzzle[i])
     return output
