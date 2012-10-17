@@ -2,7 +2,7 @@
 import csv
 import math
 
-puzzleFile = 'puzzle.csv'
+puzzleFile = 'puzzle1.csv'
 
 class puzzle():
   def __init__(self, fileName):
@@ -38,6 +38,8 @@ class puzzle():
     for row in self.puzzle:
       output.append(row[colNum])
     return output
+#  def whichBox(self, row, cell):
+#    return 
   def B(self, boxNum):
     output = []
     divVal = int(boxNum / self.sqrtLen) * self.sqrtLen
@@ -62,6 +64,7 @@ class puzzle():
         if self.puzzle[row][cell] in self.puzzleElements:
           self.poss[row][cell] = [self.puzzle[row][cell]]
   def stepPoss(self):
+    num = 0
     for row in range(self.len):
       for cell in range(self.len):
         if len(self.poss[row][cell]) == 1:
@@ -74,9 +77,12 @@ class puzzle():
     for row in range(self.len):
       for cell in range(self.len):
         if len(self.poss[row][cell]) == 1 and self.puzzle[row][cell] not in self.puzzleElements:
-          print "Found row:" + str(row) + " cell:" + str(cell) + " equals:" + str(self.poss[row][cell][0])
+          num += 1
+          #print "Found row:" + str(row) + " cell:" + str(cell) + " equals:" + str(self.poss[row][cell][0])
           self.puzzle[row][cell] = self.poss[row][cell][0]
-
+    for box in range(self.len):
+      
+    return num
 
 puzzle1 = puzzle(puzzleFile)
 puzzle2 = puzzle(puzzleFile)
@@ -96,8 +102,7 @@ for i in range(len(puzzle1.puzzle)):
   print puzzle1.B(i)
 
 for i in range(3):
-  puzzle1.stepPoss()
-  print "===========================FIRE(" + str(i) + ")========================="
+  print "===========================FIRE(" + str(i) + " = " + str(puzzle1.stepPoss()) + ")========================="
   for row in range(puzzle1.len):
     print "row " + str(row) + ":"
     print puzzle1.poss[row]
