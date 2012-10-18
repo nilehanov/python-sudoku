@@ -31,15 +31,15 @@ class puzzle():
       self.indexer[i] = {
         'R' : int(i / self.sqrtLen),
         'C' : i % self.sqrtLen,
-        'B' : int(i / self.sqrtSqrtLen ** 3) * 3 + int(i / self.sqrtLen) % self.sqrtSqrtLen,
+        'B' : int(i / self.sqrtSqrtLen ** 3) * 3 + (i % self.sqrtLen) / self.sqrtSqrtLen,
       }
     self.indexer['R'] = {}
     self.indexer['C'] = {}
     self.indexer['B'] = {}
-    for ######################################## bed time    
- in self.indexer[i] if val['R'] == i]
-    self.indexer['C'][i] = [val['C'] for val in self.indexer[i] if val['C'] == i]
-    self.indexer['B'][i] = [val['B'] for val in self.indexer[i] if val['B'] == i]
+    for i in range(self.len):
+      self.indexer['R'].setdefault(int(i / self.sqrtLen), []).append(i)
+      self.indexer['C'].setdefault(i % self.sqrtLen, []).append(i)
+      self.indexer['B'].setdefault(int(i / self.sqrtSqrtLen ** 3) * 3 + (i % self.sqrtLen) / self.sqrtSqrtLen, []).append(i)
   def printIndexer(self):
     print self.indexer.keys()
     for i in self.indexer.keys():
@@ -62,8 +62,7 @@ class puzzle():
     return output
   def getB(self, boxNum):
     output = []
-    for i in self.indexer.keys():
-      print self.indexer[i]
+    for i in range(self.len):
       if self.indexer[i]['B'] == boxNum:
         output.append(self.puzzle[i])
     return output
@@ -83,22 +82,22 @@ class puzzle():
     for i in range(self.len):
       if self.puzzle[i] in self.puzzleElements:
         self.poss[i] = [self.puzzle[i]]
-  def stepPoss(self):
-    num = 0
-    for i in range(self.len):
-      if len(self.poss[row][cell]) == 1:
-        for rowPop in range(self.len):
-          if rowPop != row:
-            self.poss[rowPop][cell] = [item for item in self.poss[rowPop][cell] if item not in self.poss[row][cell]]
-        for cellPop in range(self.len):
-          if cellPop != cell:
-            self.poss[row][cellPop] = [item for item in self.poss[row][cellPop] if item not in self.poss[row][cell]]
-    for row in range(self.len):
-      for cell in range(self.len):
-        if len(self.poss[row][cell]) == 1 and self.puzzle[row][cell] not in self.puzzleElements:
-          num += 1
+#  def stepPoss(self):
+#    num = 0
+#    for i in range(self.len):
+#      if len(self.poss[i]) == 1:
+#        for row in self.indexer[self.indexer[i]['R']]['R']:
+#          if row != self.indexer[i]['R']:####### crap.  no more x, y... just i  -- really night.
+#            self.poss[i] = [item for item in self.poss[self.indexer[] if item not in self.poss[i]]
+#        for cellPop in range(self.len):
+#          if cellPop != cell:
+#            self.poss[row][cellPop] = [item for item in self.poss[row][cellPop] if item not in self.poss[row][cell]]
+#    for row in range(self.len):
+#      for cell in range(self.len):
+#        if len(self.poss[row][cell]) == 1 and self.puzzle[row][cell] not in self.puzzleElements:
+#          num += 1
           #print "Found row:" + str(row) + " cell:" + str(cell) + " equals:" + str(self.poss[row][cell][0])
-          self.puzzle[row][cell] = self.poss[row][cell][0]
+#          self.puzzle[row][cell] = self.poss[row][cell][0]
 #    for box in range(self.len):
       
 #    return num
@@ -108,22 +107,47 @@ puzzle2 = puzzle(puzzleFile)
 
 puzzle1.printPuzzle()
 
-print "Puzzle elements:"
+print "\nPuzzle elements:"
 print puzzle1.puzzleElements
 
-print "Rows:"
+print "\nRows:"
 for i in range(puzzle1.sqrtLen):
   print puzzle1.getR(i)
-print "Cols:"
+
+print "\nCols:"
 for i in range(puzzle1.sqrtLen):
   print puzzle1.getC(i)
 
-print "Indexer:"
-puzzle1.printIndexer()
+#print "Indexer:"
+#puzzle1.printIndexer()
 
-print "Boxes:"
+print "\nBoxes:"
 for i in range(puzzle1.sqrtLen):
   print puzzle1.getB(i)
+
+print "\npuzzle1.indexer['R'][0]"
+print puzzle1.indexer['R'][0]
+print "puzzle1.puzzle1[puzzle1.indexer['R'][0]] itteration"
+output = ""
+for i in puzzle1.indexer['R'][0]:
+  output += str(puzzle1.puzzle[i]) + " "
+print output
+
+print "\npuzzle1.indexer['C'][0]"
+print puzzle1.indexer['C'][0]
+print "puzzle1.puzzle1[puzzle1.indexer['C'][0]] itteration"
+output = ""
+for i in puzzle1.indexer['C'][0]:
+  output += str(puzzle1.puzzle[i]) + " "
+print output
+
+print "\npuzzle1.indexer['B'][0]"
+print puzzle1.indexer['B'][0]
+print "puzzle1.puzzle1[puzzle1.indexer['B'][0]] itteration"
+output = ""
+for i in puzzle1.indexer['B'][0]:
+  output += str(puzzle1.puzzle[i]) + " "
+print output
 
 #for i in range(3):
 #  print "===========================FIRE(" + str(i) + " = " + str(puzzle1.stepPoss()) + ")========================="
@@ -131,10 +155,10 @@ for i in range(puzzle1.sqrtLen):
 #    print "row " + str(row) + ":"
 #    print puzzle1.poss[row]
 
-print "Old puzzle:"
+print "\nOld puzzle:"
 puzzle2.printPuzzle()
 
-print "New puzzle:"
+print "\nNew puzzle:"
 puzzle1.printPuzzle()
 
 
