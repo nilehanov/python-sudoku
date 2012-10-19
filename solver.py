@@ -2,7 +2,7 @@
 from csv import reader
 from math import sqrt
 
-puzzleFile = 'puzzle.csv'
+puzzleFile = '16x16.csv'
 
 class puzzle():
 
@@ -51,7 +51,7 @@ class puzzle():
       self.indexer[i] = {
         'R' : int(i / self.sqrtLen),
         'C' : i % self.sqrtLen,
-        'B' : int(i / self.sqrtSqrtLen ** 3) * 3 + (i % self.sqrtLen) / self.sqrtSqrtLen,
+        'B' : int(i / self.sqrtSqrtLen ** 3) * self.sqrtSqrtLen + (i % self.sqrtLen) / self.sqrtSqrtLen,
       }
     for k in ['R', 'C', 'B']:
       self.indexer[k] = []
@@ -60,7 +60,7 @@ class puzzle():
     for i in range(self.len):
       self.indexer['R'][int(i / self.sqrtLen)].append(i)
       self.indexer['C'][i % self.sqrtLen].append(i)
-      self.indexer['B'][int(i / self.sqrtSqrtLen ** 3) * 3 + (i % self.sqrtLen) / self.sqrtSqrtLen].append(i)
+      self.indexer['B'][int(i / self.sqrtSqrtLen ** 3) * self.sqrtSqrtLen + (i % self.sqrtLen) / self.sqrtSqrtLen].append(i)
     for i in range(self.len):
       self.indexer[i]['S'] = []
       for k in ['R', 'C', 'B']:
@@ -129,6 +129,8 @@ class puzzle():
         for s in self.indexer[i]['S']:
           self.poss[s] = [j for j in self.poss[s] if j not in [self.poss[i][0]]]
     for i in range(self.len):
+      if self.poss[i] == 0:
+        print "0 len array found on step #" + str(i)
       if len(self.poss[i]) == 1 and self.puzzle[i] != self.poss[i][0]:
         self.puzzle[i] = self.poss[i][0]
         num += 1
@@ -160,9 +162,6 @@ for i in range(puzzle1.sqrtLen):
 print "\nCols:"
 for i in range(puzzle1.sqrtLen):
   print puzzle1.getC(i)
-
-#print "Indexer:"
-#puzzle1.printIndexer()
 
 print "\nBoxes:"
 for i in range(puzzle1.sqrtLen):
@@ -198,13 +197,16 @@ puzzle1.printPoss()
 #for i in range(3):
 num = 1
 cnt = 0
-while num != 0 and cnt < 8:
+while num != 0 and cnt < 40:
 #  print "===========================FIRE(" + str(i) + " = " + str(puzzle1.stepPoss()) + ")========================="
   num = puzzle1.stepPoss()
   cnt += 1
   print "===========================FIRE(" + str(cnt) + ") = " + str(num) + " ========================="
 #  puzzle1.printPoss()
   puzzle1.printPuzzle()
+  print "\nposs:"
+  puzzle1.printPoss()
+
 
 print "\nOld puzzle:"
 puzzle2.printPuzzle()
@@ -212,10 +214,8 @@ puzzle2.printPuzzle()
 print "\nNew puzzle:"
 puzzle1.printPuzzle()
 
+#print "Indexer:"
 #puzzle1.printIndexer()
-#print puzzle1.indexer['R'][puzzle1.indexer[3]['R']]
-
-
 
 #puzzle1.setCellValue(0, 0, 5)
 #print "Did box 0 change?"
