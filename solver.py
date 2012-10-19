@@ -2,7 +2,7 @@
 from csv import reader
 from math import sqrt
 
-puzzleFile = 'puzzle1.csv'
+puzzleFile = 'puzzle.csv'
 
 class puzzle():
 
