@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-import csv
-import math
+from csv import reader
+from math import sqrt
 
 puzzleFile = 'puzzle1.csv'
 
@@ -16,8 +16,8 @@ class puzzle():
     self.buildPuzzle()
 
     self.len = len(self.puzzle)
-    self.sqrtLen = int(math.sqrt(self.len))
-    self.sqrtSqrtLen = int(math.sqrt(self.sqrtLen))
+    self.sqrtLen = int(sqrt(self.len))
+    self.sqrtSqrtLen = int(sqrt(self.sqrtLen))
 
     self.buildIndexer()
 
@@ -26,7 +26,7 @@ class puzzle():
 
   def buildPuzzle(self):
     input = []
-    for line in csv.reader(open(self.fileName)):
+    for line in reader(open(self.fileName)):
       input.append(line)
     self.puzzleElements = input[0]
     for row in input[1:]:
@@ -66,9 +66,7 @@ class puzzle():
       for k in ['R', 'C', 'B']:
         for v in self.indexer[k][self.indexer[i][k]]:
           self.indexer[i]['S'].append(v)
-        self.indexer[i]['S'].remove(i)
-        self.indexer[i]['S'] = sorted(self.indexer[i]['S'])
-      print self.indexer[i]['S']
+      self.indexer[i]['S'] = self.setBanAndSort(self.indexer[i]['S'], i)
 
 
   def printIndexer(self):
@@ -125,13 +123,27 @@ class puzzle():
 
 
   def stepPoss(self):
-#    num = 0
+    num = 0
     for i in range(self.len):
-      print str(i) + " : " + str(self.poss[i])
       if len(self.poss[i]) == 1:
         for s in self.indexer[i]['S']:
-          self.poss[s] = self.poss[s] not in [self.poss[i][0]]
-#    return num
+          self.poss[s] = [j for j in self.poss[s] if j not in [self.poss[i][0]]]
+    for i in range(self.len):
+      if len(self.poss[i]) == 1 and self.puzzle[i] != self.poss[i][0]:
+        self.puzzle[i] == self.poss[i][0]
+        num += 1
+    return num
+
+
+  def setBanAndSort(self, set, ban):
+    for i in set:
+      while set.count(i) > 1:
+        set.remove(i)
+      if i == ban:
+        while set.count(i) > 0:
+          set.remove(i)
+    return sorted(set)
+
 
 puzzle1 = puzzle(puzzleFile)
 puzzle2 = puzzle(puzzleFile)
@@ -180,13 +192,18 @@ for i in puzzle1.indexer['B'][0]:
   output += str(puzzle1.puzzle[i]) + " "
 print output
 
+print "Fresh poss:"
 puzzle1.printPoss()
 
-for i in range(3):
-  print "===========================FIRE(" + str(i) + " = " + puzzle1.stepPoss() + ")========================="
-  for row in range(puzzle1.len):
-    print "row " + str(row) + ":"
-    print puzzle1.poss[row]
+#for i in range(3):
+num = 1
+cnt = 0
+while num != 0 and cnt < 8:
+#  print "===========================FIRE(" + str(i) + " = " + str(puzzle1.stepPoss()) + ")========================="
+  num = puzzle1.stepPoss()
+  cnt += 1
+  print "===========================FIRE(" + str(cnt) + " = " + str(num) + ")========================="
+  puzzle1.printPoss()
 
 print "\nOld puzzle:"
 puzzle2.printPuzzle()
