@@ -131,10 +131,43 @@ class puzzle():
     for i in range(self.len):
       if self.poss[i] == 0:
         print "0 len array found on step #" + str(i)
+        exit(1)
       if len(self.poss[i]) == 1 and self.puzzle[i] != self.poss[i][0]:
         self.puzzle[i] = self.poss[i][0]
         num += 1
     return num
+
+
+  def hardStepPoss(self):
+    num = 0
+    for i in range(self.len):
+      if len(self.poss[i]) > 1:
+        temp = []
+        for s in self.indexer[i]['S']:
+          if len(self.poss[s]) > 1:
+            temp += self.poss[s]
+#        print self.setAndSort(temp)
+        temp = [j for j in self.setAndSort(self.poss[i]) if j not in temp]
+        if len(temp) == 1:
+          print "found: " + str(temp)
+        if type(temp) != bool and len(temp) == 1:
+          self.poss[i] = temp
+    for i in range(self.len):
+      if self.poss[i] == 0:
+        print "0 len array found on step #" + str(i)
+        exit(1)
+      if len(self.poss[i]) == 1 and self.puzzle[i] != self.poss[i][0]:
+        self.puzzle[i] = self.poss[i][0]
+        num += 1
+    return num
+ 
+
+
+  def setAndSort(self, set):
+    for i in set:
+      while set.count(i) > 1:
+        set.remove(i)
+    return sorted(set)
 
 
   def setBanAndSort(self, set, ban):
@@ -150,49 +183,51 @@ class puzzle():
 puzzle1 = puzzle(puzzleFile)
 puzzle2 = puzzle(puzzleFile)
 
-puzzle1.printPuzzle()
 
-print "\nPuzzle elements:"
-print puzzle1.puzzleElements
+def debugStuff():
+  puzzle1.printPuzzle()
 
-print "\nRows:"
-for i in range(puzzle1.sqrtLen):
-  print puzzle1.getR(i)
+  print "\nPuzzle elements:"
+  print puzzle1.puzzleElements
 
-print "\nCols:"
-for i in range(puzzle1.sqrtLen):
-  print puzzle1.getC(i)
+  print "\nRows:"
+  for i in range(puzzle1.sqrtLen):
+    print puzzle1.getR(i)
 
-print "\nBoxes:"
-for i in range(puzzle1.sqrtLen):
-  print puzzle1.getB(i)
+  print "\nCols:"
+  for i in range(puzzle1.sqrtLen):
+    print puzzle1.getC(i)
 
-print "\npuzzle1.indexer['R'][0]"
-print puzzle1.indexer['R'][0]
-print "puzzle1.puzzle1[puzzle1.indexer['R'][0]] itteration"
-output = ""
-for i in puzzle1.indexer['R'][0]:
-  output += str(puzzle1.puzzle[i]) + " "
-print output
+  print "\nBoxes:"
+  for i in range(puzzle1.sqrtLen):
+    print puzzle1.getB(i)
 
-print "\npuzzle1.indexer['C'][0]"
-print puzzle1.indexer['C'][0]
-print "puzzle1.puzzle1[puzzle1.indexer['C'][0]] itteration"
-output = ""
-for i in puzzle1.indexer['C'][0]:
-  output += str(puzzle1.puzzle[i]) + " "
-print output
+  print "\npuzzle1.indexer['R'][0]"
+  print puzzle1.indexer['R'][0]
+  print "\npuzzle1.puzzle1[puzzle1.indexer['R'][0]] itteration"
+  output = ""
+  for i in puzzle1.indexer['R'][0]:
+    output += str(puzzle1.puzzle[i]) + " "
+  print output
 
-print "\npuzzle1.indexer['B'][0]"
-print puzzle1.indexer['B'][0]
-print "puzzle1.puzzle1[puzzle1.indexer['B'][0]] itteration"
-output = ""
-for i in puzzle1.indexer['B'][0]:
-  output += str(puzzle1.puzzle[i]) + " "
-print output
+  print "\npuzzle1.indexer['C'][0]"
+  print puzzle1.indexer['C'][0]
+  print "\npuzzle1.puzzle1[puzzle1.indexer['C'][0]] itteration"
+  output = ""
+  for i in puzzle1.indexer['C'][0]:
+    output += str(puzzle1.puzzle[i]) + " "
+  print output
 
-print "Fresh poss:"
-puzzle1.printPoss()
+  print "\npuzzle1.indexer['B'][0]"
+  print puzzle1.indexer['B'][0]
+  print "\npuzzle1.puzzle1[puzzle1.indexer['B'][0]] itteration"
+  output = ""
+  for i in puzzle1.indexer['B'][0]:
+    output += str(puzzle1.puzzle[i]) + " "
+  print output
+
+#print "Fresh poss:"
+#puzzle1.printPoss()
 
 #for i in range(3):
 num = 1
@@ -201,18 +236,25 @@ while num != 0 and cnt < 40:
 #  print "===========================FIRE(" + str(i) + " = " + str(puzzle1.stepPoss()) + ")========================="
   num = puzzle1.stepPoss()
   cnt += 1
-  print "===========================FIRE(" + str(cnt) + ") = " + str(num) + " ========================="
+  print "\n===========================FIRE(" + str(cnt) + ") = " + str(num) + " ========================="
+  print "\npuzzle2.hardStepPoss() = " + str(puzzle2.hardStepPoss())
 #  puzzle1.printPoss()
   puzzle1.printPuzzle()
-  print "\nposs:"
-  puzzle1.printPoss()
+#  print "\nposs:"
+#  puzzle1.printPoss()
 
+print "\nhardStepPoss() = " + str(puzzle1.hardStepPoss())
+puzzle1.printPuzzle()
 
 print "\nOld puzzle:"
 puzzle2.printPuzzle()
 
-print "\nNew puzzle:"
-puzzle1.printPuzzle()
+print "\nMust run it once before: " + str(puzzle2.stepPoss())
+print "\npuzzle2.hardStepPoss() = " + str(puzzle2.hardStepPoss())
+puzzle2.printPuzzle()
+
+#print "\nNew puzzle:"
+#puzzle1.printPuzzle()
 
 #print "Indexer:"
 #puzzle1.printIndexer()
