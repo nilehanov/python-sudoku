@@ -130,7 +130,7 @@ class puzzle():
           self.poss[s] = [j for j in self.poss[s] if j not in [self.poss[i][0]]]
     for i in range(self.len):
       if len(self.poss[i]) == 1 and self.puzzle[i] != self.poss[i][0]:
-        self.puzzle[i] == self.poss[i][0]
+        self.puzzle[i] = self.poss[i][0]
         num += 1
     return num
 
@@ -202,8 +202,9 @@ while num != 0 and cnt < 8:
 #  print "===========================FIRE(" + str(i) + " = " + str(puzzle1.stepPoss()) + ")========================="
   num = puzzle1.stepPoss()
   cnt += 1
-  print "===========================FIRE(" + str(cnt) + " = " + str(num) + ")========================="
-  puzzle1.printPoss()
+  print "===========================FIRE(" + str(cnt) + ") = " + str(num) + " ========================="
+#  puzzle1.printPoss()
+  puzzle1.printPuzzle()
 
 print "\nOld puzzle:"
 puzzle2.printPuzzle()
