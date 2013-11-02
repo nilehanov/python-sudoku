@@ -68,6 +68,9 @@ class Sudoku(sudoku.Sudoku):
     def guess_string_from_net_output(cls, net_output):
         return cls.to_string(cls.guess_from_net_output(net_output))
 
+    def hits_from_net_output(self, net_output):
+        return self.compare_guess_to_actual(self.guess_from_net_output(net_output))
+
     @classmethod
     def guess_from_net_output(cls, net_output):
         # de-numpy for slicing
@@ -104,6 +107,16 @@ def save_dataset(ds):
     with open(DATASET_FILE, 'w') as f:
         pickle.dump(ds, f)
 
+def run_puzzle(puzzle, net):
+    print 'To be solved:'
+    print puzzle
+    print 'Solved:'
+    print puzzle.output_string
+    res = net.activate(puzzle.output_fmt)
+    print 'Guess pattern:'
+    print Sudoku.guess_string_from_net_output(res)
+    print 'Hits:'
+    print puzzle.hits_from_net_output(res)
 
 if __name__ == '__main__':
     # setup network
@@ -142,31 +155,17 @@ if __name__ == '__main__':
     print 'Starting hits:'
     puzzle = Sudoku()
 
-    print puzzle
-    #print puzzle.output_fmt
-    res = net.activate(puzzle.output_fmt)
-    print puzzle.guess_string_from_net_output(res)
+    run_puzzle(puzzle, net)
 
-    #known = make_guess(format_puzzle(puzzle, format_type='output'))
-    #known_string = string_puzzle_from_list(known)
-    #guess = make_guess(net.activate(format_puzzle(puzzle, format_type='output')))
-    #guess_string = string_puzzle_from_list(guess)
-    #print compare_strings(known_string, guess_string)
-
-    #pre = 0
-    #pre_time = time.time()
-    #for i in range(EPOCHS):
-    #    puzzle = Sudoku()
-    #    cur = trainer.train()
-    #    delta = cur - pre
-    #    pre = cur
-    #    cur_time = time.time()
-    #    time_delta = cur_time - pre_time
-    #    pre_time = cur_time
-    #    print 'Epoch: {:>5}\tError: {:9.7f}\tDelta: {:9.7f}\tTime delta: {}'.format(i + 1, cur, delta, time_delta)
-    #    puzzle.print_masked()
-    #    print 'Hits:'
-    #    known = make_guess(format_puzzle(puzzle, format_type='output'))
-    #    known_string = string_puzzle_from_list(known)
-    #    print compare_strings(known_string, string_puzzle_from_list(make_guess(net.activate(format_puzzle(puzzle, format_type='output')))))
-    #    save_network(net)
+    pre = 0
+    pre_time = time.time()
+    for i in range(EPOCHS):
+        puzzle = Sudoku()
+        cur = trainer.train()
+        delta = cur - pre
+        pre = cur
+        cur_time = time.time()
+        time_delta = cur_time - pre_time
+        pre_time = cur_time
+        print 'Epoch: {:>5}\tError: {:9.7f}\tDelta: {:9.7f}\tTime delta: {}'.format(i + 1, cur, delta, time_delta)
+        run_puzzle(puzzle, net)
