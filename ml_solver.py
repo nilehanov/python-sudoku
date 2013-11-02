@@ -30,7 +30,7 @@ class Sudoku(sudoku.Sudoku):
         return self.format_puzzle(self.masked_grid)
 
     @property
-    def output_fmt(self):
+    def output_format(self):
         return self.format_puzzle(self.solution)
 
     @classmethod
@@ -112,7 +112,7 @@ def run_puzzle(puzzle, net):
     print puzzle
     print 'Solved:'
     print puzzle.output_string
-    res = net.activate(puzzle.output_fmt)
+    res = net.activate(puzzle.output_format)
     #print 'Guess pattern:'
     #print Sudoku.guess_string_from_net_output(res)
     print 'Hits:'
@@ -120,7 +120,7 @@ def run_puzzle(puzzle, net):
 
 if __name__ == '__main__':
     # setup network
-    if '--new-net' in sys.argv or NETWORK_FILE not in os.listdir('.'):
+    if '--new' in sys.argv or '--new-net' in sys.argv or NETWORK_FILE not in os.listdir('.'):
         print 'New network'
         net = buildNetwork(SUDOKU_N ** 6, HIDDEN_LAYERS, SUDOKU_N ** 6, bias=True, hiddenclass=SigmoidLayer)
     else:
@@ -131,7 +131,7 @@ if __name__ == '__main__':
             net.sortModules()
 
     # setup dataset
-    if '--new-ds' in sys.argv or DATASET_FILE not in os.listdir('.'):
+    if '--new' in sys.argv or '--new-ds' in sys.argv or DATASET_FILE not in os.listdir('.'):
         print 'New dataset'
         ds = SupervisedDataSet(SUDOKU_N ** 6, SUDOKU_N ** 6)
     else:
@@ -145,8 +145,8 @@ if __name__ == '__main__':
     # ensures dataset is at least this big
     while len(ds) < DATASET_SIZE:
         puzzle = Sudoku()
-        ds.addSample(puzzle.input_fmt, puzzle.output_fmt)
-        ds.addSample(puzzle.output_fmt, puzzle.output_fmt)
+        ds.addSample(puzzle.input_format, puzzle.output_format)
+        ds.addSample(puzzle.output_format, puzzle.output_format)
     # stash it
     print 'Dataset size: {}'.format(len(ds))
     save_dataset(ds)
@@ -167,5 +167,8 @@ if __name__ == '__main__':
         cur_time = time.time()
         time_delta = cur_time - pre_time
         pre_time = cur_time
-        print 'Epoch: {:>5}\tError: {:9.7f}\tDelta: {:9.7f}\tTime delta: {}'.format(i + 1, cur, delta, time_delta)
+        print 'Epoch: {:>5}\tError: {:9.7f}\tDelta: {:9.7f}\tTime delta: {}\tDataset size: {}'.format(i + 1, cur, delta, time_delta, len(ds))
         run_puzzle(puzzle, net)
+        if '--grow' in sys.argv:
+            ds.addSample(puzzle.input_format, puzzle.output_format)
+            ds.addSample(puzzle.output_format, puzzle.output_format)
