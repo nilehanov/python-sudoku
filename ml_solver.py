@@ -26,7 +26,7 @@ class Sudoku(sudoku.Sudoku):
         _ = self.masked_grid
 
     @property
-    def input_fmt(self):
+    def input_format(self):
         return self.format_puzzle(self.masked_grid)
 
     @property
@@ -44,6 +44,30 @@ class Sudoku(sudoku.Sudoku):
                 output.extend(0. if option != square else 1. for option in possibles)
         return output
 
+    @property
+    def input_string(self):
+        return self.to_string(self.masked_grid)
+
+    @property
+    def output_string(self):
+        return self.to_string(self.solution)
+
+    @classmethod
+    def to_string(cls, grid):
+        output = ''
+        n = SUDOKU_N ** 2
+        for i in range(n):
+            output += ' '.join('_' if v == '_' else str(int(v)) for v in grid[i * n:(i + 1) * n])
+            output += '\n'
+        return output
+
+    def __str__(self):
+        return self.to_string(self.masked_grid)
+
+    @classmethod
+    def guess_string_from_net_output(cls, net_output):
+        return cls.to_string(cls.guess_from_net_output(net_output))
+
     @classmethod
     def guess_from_net_output(cls, net_output):
         # de-numpy for slicing
@@ -58,27 +82,18 @@ class Sudoku(sudoku.Sudoku):
 
     @classmethod
     def guess_to_string(cls, puz):
-        output = ''
+        output = []
         n = SUDOKU_N ** 2
         for i in range(n):
-            output += ' '.join(str(int(v)) for v in puz[i * n:(i + 1) * n])
-            output += '\n'
-        return output
+            output.append(' '.join(str(int(v)) for v in puz[i * n:(i + 1) * n]))
+        return '\n'.join(output) + '\n'
 
     def compare_guess_to_actual(self, guess):
-        return self.compare_two_puzzle_strings(self.guess_to_string(guess), self.actual)
+        return self.compare_two_puzzle_strings(self.guess_to_string(guess), self.output_string)
 
     @classmethod
     def compare_two_puzzle_strings(cls, one, two):
         return ''.join(o if o==t else '_' for o, t in itertools.izip(one, two))
-
-    def __str__(self):
-        output = ''
-        n = SUDOKU_N ** 2
-        for i in range(n):
-            output += ' '.join(str(int(v)) for v in self.solution[i * n:(i + 1) * n])
-            output += '\n'
-        return output
 
 
 def save_network(net):
@@ -128,9 +143,9 @@ if __name__ == '__main__':
     puzzle = Sudoku()
 
     print puzzle
-    print puzzle.output_fmt
+    #print puzzle.output_fmt
     res = net.activate(puzzle.output_fmt)
-    print Sudoku.guess_to_string(res)
+    print puzzle.guess_string_from_net_output(res)
 
     #known = make_guess(format_puzzle(puzzle, format_type='output'))
     #known_string = string_puzzle_from_list(known)
