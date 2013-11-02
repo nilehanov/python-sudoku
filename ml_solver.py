@@ -110,8 +110,8 @@ def save_dataset(ds):
 def run_puzzle(puzzle, net):
     print 'To be solved:'
     print puzzle
-    print 'Solved:'
-    print puzzle.output_string
+    #print 'Solved:'
+    #print puzzle.output_string
     res = net.activate(puzzle.output_format)
     #print 'Guess pattern:'
     #print Sudoku.guess_string_from_net_output(res)
@@ -162,6 +162,7 @@ if __name__ == '__main__':
     for i in range(EPOCHS):
         puzzle = Sudoku()
         cur = trainer.train()
+        save_network(net)
         delta = cur - pre
         pre = cur
         cur_time = time.time()
@@ -172,3 +173,5 @@ if __name__ == '__main__':
         if '--grow' in sys.argv:
             ds.addSample(puzzle.input_format, puzzle.output_format)
             ds.addSample(puzzle.output_format, puzzle.output_format)
+            if not i % 10:
+                save_dataset(ds)
