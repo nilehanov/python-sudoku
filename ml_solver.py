@@ -113,8 +113,8 @@ def run_puzzle(puzzle, net):
     print 'Solved:'
     print puzzle.output_string
     res = net.activate(puzzle.output_fmt)
-    print 'Guess pattern:'
-    print Sudoku.guess_string_from_net_output(res)
+    #print 'Guess pattern:'
+    #print Sudoku.guess_string_from_net_output(res)
     print 'Hits:'
     print puzzle.hits_from_net_output(res)
 
